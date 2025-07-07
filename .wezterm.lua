@@ -26,7 +26,7 @@ config = {
   background = {
     {
       source = {
-        File = "/home/marquesch/.config/wezterm/minimalist.jpg",
+        File = os.getenv("HOME").."/.config/wezterm/minimalist.jpg",
       },
       hsb = {
         hue = 1.0,
