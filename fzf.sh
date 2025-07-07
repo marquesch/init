@@ -5,3 +5,5 @@ if ! command -v brew &> /dev/null; then
 fi
 
 brew install fzf
+
+echo "source <(fzf --zsh)" >> ~/.zsrhc
