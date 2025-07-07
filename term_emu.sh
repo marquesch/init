@@ -75,6 +75,11 @@ else
     log_warning "'.wezterm.lua' not found in the script's directory. WezTerm will use default configuration."
 fi
 
+# --- Copy background image file ---
+mkdir -p ~/.config/wezterm
+cp minimalist.jpg ~/.config/wezterm/minimalist.jpg
+
+
 # --- Set WezTerm as default terminal for GNOME ---
 log_info "Attempting to set WezTerm as the default terminal (GNOME only)..."
 if command -v gsettings &> /dev/null && [ -n "$DESKTOP_SESSION" ] && [[ "$DESKTOP_SESSION" == *"gnome"* ]]; then
