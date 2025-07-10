@@ -40,6 +40,11 @@ install_common_dependencies() {
     log_success "Common dependencies installed."
 }
 
+install_common_utility() {
+    log_info "Installing common utilities..."
+    sudo apt install -y ffmpeg htop neofetch neovim net-tools sublime-text vim
+}
+
 install_spotify() {
     log_info "Installing Spotify via Snap..."
     if snap install spotify; then

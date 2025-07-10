@@ -1,7 +1,16 @@
-.PHONY: install_fonts
+init: setup_terminal setup_sdk setup_docker install_apps
 
-install_fonts:
-	chmod +x install_meslo.sh
-	sudo ./install_meslo.sh
+setup_terminal:
+	./term_env.sh
+	./term_emu.sh
+	./fzf.sh
 
+setup_sdk:
+	./sdk.sh
+
+setup_docker:
+	./docker.sh
+
+install_apps:
+	./basics.sh
 
