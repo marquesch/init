@@ -13,10 +13,16 @@ config = {
   check_for_updates = false,
   use_fancy_tab_bar = false,
   tab_bar_at_bottom = false,
-  font_size = 12.5,
+  font_size = 11,
   font = wezterm.font("MesloLGS Nerd Font Mono"),
   enable_tab_bar = false,
   color_scheme = 'Afterglow',
+  keys = {
+    { key = 'LeftArrow', mods = 'SHIFT|ALT', action = wezterm.action.SplitPane { direction = 'Left'} },
+    { key = 'DownArrow', mods = 'SHIFT|ALT', action = wezterm.action.SplitPane { direction = 'Down'} },
+    { key = 'RightArrow', mods = 'SHIFT|ALT', action = wezterm.action.SplitPane { direction = 'Right'} },
+    { key = 'UpArrow', mods = 'SHIFT|ALT', action = wezterm.action.SplitPane { direction = 'Up'} }
+},
   window_padding = {
     left = 3,
     right = 3,
