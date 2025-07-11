@@ -31,7 +31,6 @@ check_ubuntu() {
     fi
 }
 
-# --- Main Installation Functions ---
 
 install_common_dependencies() {
     log_info "Installing common system dependencies..."
@@ -55,11 +54,11 @@ install_spotify() {
 }
 
 install_postman() {
-    log_info "Installing Postman via Snap..."
-    if snap install postman; then
+    log_info "Installing Postman via Brew..."
+    if brew install --cask postman; then
         log_success "Postman installed successfully."
     else
-        log_error "Failed to install Postman via Snap. Check your Snap installation or internet connection."
+        log_error "Failed to install Postman via Brew. Check your Brew installation or internet connection."
     fi
 }
 
