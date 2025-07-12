@@ -155,7 +155,7 @@ install_flameshot() {
     fi
 
     log_info "Configuring Print Screen key for Flameshot (GNOME only)..."
-    if command -v gsettings &> /dev/null && [ -n "$DESKTOP_SESSION" ] && [[ "$DESKTOP_SESSION" == *"gnome"* ]]; then
+    if command -v gsettings &> /dev/null; then
         # Disable default print screen behavior
         gsettings set org.gnome.settings-daemon.plugins.media-keys screenshot '[]'
         gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']"
