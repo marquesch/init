@@ -23,12 +23,6 @@ log_error() {
     exit 1
 }
 
-check_root() {
-    if [[ $EUID -ne 0 ]]; then
-        log_error "This script must be run as root or with sudo."
-    fi
-}
-
 install_ubuntu_docker() {
     log_info "Installing Docker on Ubuntu..."
 
@@ -43,7 +37,7 @@ install_ubuntu_docker() {
 
     log_info "Adding Docker's official GPG key..."
     sudo install -m 0755 -d /etc/apt/keyrings || log_error "Failed to create /etc/apt/keyrings directory."
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyring/docker.asc || log_error "Failed to download and dearmor Docker GPG key."
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc || log_error "Failed to download and dearmor Docker GPG key."
     sudo chmod a+r /etc/apt/keyrings/docker.asc || log_error "Failed to set permissions on Docker GPG key."
 
     log_info "Setting up the Docker APT repository..."
@@ -93,9 +87,12 @@ verify_docker_installation() {
 set -e # Exit immediately if a command exits with a non-zero status.
 sudo -v # Refresh sudo timestamp
 
-check_root
-
 log_info "Starting Docker installation script for Ubuntu."
+
+if command -v docker; then
+    log_info "Docker already installed. Skipping..."
+    exit 0
+fi
 
 # Detect OS - only proceed if it's Ubuntu
 if grep -qi "ubuntu" /etc/os-release; then

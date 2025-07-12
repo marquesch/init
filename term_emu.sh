@@ -45,7 +45,10 @@ fi
 
 # --- Install Meslo Nerd Font ---
 log_info "Attempting to install Meslo Nerd Font..."
-brew install --cask font-meslo-lg-nerd-font
+wget https://github.com/ryanoasis/nerd-fonts/raw/refs/heads/master/src/unpatched-fonts/Meslo/S/Regular/Meslo%20LG%20S%20Regular%20for%20Powerline.ttf
+mkdir -p "$HOME/.fonts"
+mv "Meslo LG S Regular for Powerline.ttf" "$HOME/.fonts"
+log_success "Successfully installed Meslo LG S Nerd Font"
 
 # --- Copy background image file ---
 mkdir -p ~/.config/wezterm
@@ -53,7 +56,7 @@ cp bg.jpg ~/.config/wezterm/bg.jpg
 
 # --- Set WezTerm as default terminal for GNOME ---
 log_info "Attempting to set WezTerm as the default terminal (GNOME only)..."
-if command -v gsettings &> /dev/null && [ -n "$DESKTOP_SESSION" ] && [[ "$DESKTOP_SESSION" == *"gnome"* ]]; then
+if command -v gsettings &> /dev/null; then
     if gsettings set org.gnome.desktop.default-applications.terminal exec "/usr/bin/wezterm"; then
         log_success "WezTerm set as default GNOME terminal."
     else

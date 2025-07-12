@@ -18,13 +18,6 @@ log_error() {
     exit 1
 }
 
-# --- Pre-flight Checks ---
-check_root() {
-    if [[ $EUID -ne 0 ]]; then
-        log_error "This script must be run as root or with sudo. Please run: sudo ./install_apps.sh"
-    fi
-}
-
 check_ubuntu() {
     if ! grep -qi "ubuntu" /etc/os-release; then
         log_error "This script is designed for Ubuntu only. Exiting."
@@ -41,56 +34,57 @@ install_common_dependencies() {
 
 install_common_utility() {
     log_info "Installing common utilities..."
-    sudo apt install -y ffmpeg htop neofetch neovim net-tools sublime-text vim
-}
-
-install_homebrew() {
-    log_info "Attempting to install Homebrew..."
-    if command -v brew &> /dev/null; then
-        log_info "Homebrew is already installed. Skipping installation."
-    else
-        log_info "Installing Homebrew..."
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || log_error "Failed to install Homebrew."
-        log_success "Homebrew installed and configured."
-    fi
+    sudo apt install -y ffmpeg htop neofetch neovim net-tools sublime-text vim 
 }
 
 install_fzf() {
-    if ! command -v brew &> /dev/null; then
-        log_error "Homebrew is not installed. Please install it first!"        
-        exit 1
+    log_info "Installing fzf..."
+    if command -v fzf; then
+        log_info "fzf already installed. Skipping..."
+        return 0
     fi
-    
-    log_info "Installing fzf using Brew..."
-    brew install fzf
-    log_success "Installed fzf successfully!"
+    file_name=fzf-0.64.0-linux_amd64.tar.gz
+    wget "https://github.com/junegunn/fzf/releases/download/v0.64.0/$file_name"
+    tar -xzf "$file_name" -C "$HOME/.local/bin"
+    rm -f "$file_name"
 }
 
 install_asdf() {
-    log_info "Starting asdf install using Brew..."
-    brew install asdf
+    if command -v asdf; then
+        log_info "asdf already installed. Skipping..."
+        return 0
+    fi
+
+    log_info "Starting asdf install using git + bash..."
+    file_name=asdf-v0.18.0-darwin-amd64.tar.gz
+    wget "https://github.com/asdf-vm/asdf/releases/download/v0.18.0/$file_name"
+    tar -xzf "$file_name" -C "$HOME/.local/bin"
     log_success "Installed asdf successfully!"
+    log_info "Cleaning up"
+    rm -f $file_name
 }
 
 install_spotify() {
-    log_info "Adding Spotify GPG key..."
-    curl -sS https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
-    echo "deb https://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-    sudo apt update
-    log_info "Installing spotify via apt..."
-    if sudo apt install -y spotify; then
+    log_info "Installing Spotify using Snap..."
+
+    if command -v spotify; then
+        log_info "Spotify already installed. Skipping..."
+        return 0
+    elif snap install spotify; then
         log_success "Spotify installed successfully."
     else
-        log_error "Failed to install Spotify via apt."
+        log_error "Failed to install Spotify via Snap."
     fi
 }
 
 install_postman() {
-    log_info "Installing Postman via Brew..."
-    if brew install --cask postman; then
+    log_info "Installing Postman via Snap..."
+    if command -v postman; then
+        log_info "Postman already installed. Skipping..."
+    elif snap install postman; then
         log_success "Postman installed successfully."
     else
-        log_error "Failed to install Postman via Brew. Check your Brew installation or internet connection."
+        log_error "Failed to install Postman via Snap. Check your Snap installation or internet connection."
     fi
 }
 
@@ -123,7 +117,6 @@ install_chrome_browser() {
 
     log_info "Downloading Google Chrome Browser .deb package..."
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-
     sudo apt install -y ./google-chrome-stable_current_amd64.deb || log_error "Failed to install Google Chrome."
     log_success "Google Chrome installed successfully."
 
@@ -141,14 +134,14 @@ install_vscode() {
     
     log_info "Downloading Visual Studio Code .deb package..."
     # TODO get vscode version dinamically
-    wget https://vscode.download.prss.microsoft.com/dbazure/download/stable/cb0c47c0cfaad0757385834bd89d410c78a856c0/code_1.102.0-1752099871_arm64.deb 
+    wget https://vscode.download.prss.microsoft.com/dbazure/download/stable/cb0c47c0cfaad0757385834bd89d410c78a856c0/code_1.102.0-1752099874_amd64.deb
 
     log_info "Installing Visual Studio Code via apt..."
-    sudo apt install -y code_1.102.0-1752099871_arm64.deb
+    sudo apt install -y ./code_1.102.0-1752099874_amd64.deb
     log_success "Visual Studio Code installed successfully."
 
     log_info "Cleaning up..."
-    rm code_1.102.0-1752099871_arm64.deb
+    rm -f code_1.102.0-1752099871_arm64.deb
     log_info "Done cleaning up..."
 }
 
@@ -181,7 +174,10 @@ install_flameshot() {
 
 install_slack() {
     log_info "Installing Slack via Snap (classic confinement)..."
-    if snap install slack --classic; then
+    if command -v snap; then
+        log_info "Snap already installed. Skipping..."
+        return 0
+    elif snap install slack --classic; then
         log_success "Slack installed successfully."
     else
         log_error "Failed to install Slack via Snap. Check your Snap installation or internet connection."
@@ -192,13 +188,12 @@ install_slack() {
 set -e # Exit immediately if a command exits with a non-zero status.
 sudo -v # Refresh sudo timestamp at the beginning
 
-check_root
 check_ubuntu
 
 log_info "Starting application installation script for Ubuntu."
 
 install_common_dependencies
-install_homebrew
+install_asdf
 install_fzf
 install_spotify
 install_postman
