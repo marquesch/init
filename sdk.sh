@@ -18,14 +18,11 @@ log_error() {
     exit 1
 }
 
-log_info "Starting asdf install using git"
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.15.0
-echo '. "$home/.asdf/asdf.sh"' >> ~/.zshrc
-echo "plugins+=(asdf)"
-
 source ~/.zshrc
 
+log_info "Adding python asdf plugin..."
 asdf plugin-add python https://github.com/asdf-community/asdf-python.git
 
+log_info "Installing python 3.6.15 and 3.8.20"
 asdf install python 3.6.15
 asdf install python 3.8.20

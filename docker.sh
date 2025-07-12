@@ -34,18 +34,23 @@ install_ubuntu_docker() {
 
     log_info "Updating apt package index and installing dependencies..."
     sudo apt update || log_error "Failed to update apt."
+
+    for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
+        sudo apt remove $pkg
+    done
+
     sudo apt install -y ca-certificates curl gnupg lsb-release || log_error "Failed to install dependencies."
 
     log_info "Adding Docker's official GPG key..."
     sudo install -m 0755 -d /etc/apt/keyrings || log_error "Failed to create /etc/apt/keyrings directory."
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg || log_error "Failed to download and dearmor Docker GPG key."
-    sudo chmod a+r /etc/apt/keyrings/docker.gpg || log_error "Failed to set permissions on Docker GPG key."
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyring/docker.asc || log_error "Failed to download and dearmor Docker GPG key."
+    sudo chmod a+r /etc/apt/keyrings/docker.asc || log_error "Failed to set permissions on Docker GPG key."
 
     log_info "Setting up the Docker APT repository..."
     echo \
-      "deb [arch=\"$(dpkg --print-architecture)\" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-      \"$(. /etc/os-release && echo "$VERSION_CODENAME")\" stable" | \
-      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null || log_error "Failed to add Docker APT repository."
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+      $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
     log_info "Installing Docker Engine, containerd, and Docker Compose (plugin)..."
     sudo apt update || log_error "Failed to update apt after adding Docker repo."

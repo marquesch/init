@@ -25,35 +25,6 @@ log_error() {
 set -e # Exit immediately if a command exits with a non-zero status.
 sudo -v # Refresh sudo timestamp
 
-log_info "Starting development environment setup script."
-
-# --- Install Homebrew ---
-log_info "Attempting to install Homebrew..."
-if command -v brew &> /dev/null; then
-    log_info "Homebrew is already installed. Skipping installation."
-else
-    log_info "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || log_error "Failed to install Homebrew."
-
-    # Add Homebrew to PATH for the current session and persistent configuration
-    log_info "Adding Homebrew to shell environment..."
-    if [ -d "$HOME/.linuxbrew" ]; then
-        eval "$($HOME/.linuxbrew/bin/brew shellenv)"
-        echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.profile
-        echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.zshrc
-    elif [ -d "/home/linuxbrew/.linuxbrew" ]; then
-        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-        echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.profile
-        echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.zshrc
-    else
-        # Fallback for systems where brew might install to /usr/local
-        eval "$($(brew --prefix)/bin/brew shellenv)"
-        echo 'eval "$($(brew --prefix)/bin/brew shellenv)"' >> ~/.profile
-        echo 'eval "$($(brew --prefix)/bin/brew shellenv)"' >> ~/.zshrc
-    fi
-    log_success "Homebrew installed and configured."
-fi
-
 
 # --- Install Zsh ---
 log_info "Attempting to install Zsh..."
@@ -131,45 +102,6 @@ else
     log_info "Powerlevel10k theme already exists. Skipping clone."
 fi
 
-# Copy .p10k.zsh config (assuming it's in the same directory as this script)
-if [ -f ".p10k.zsh" ]; then
-    log_info "Copying .p10k.zsh configuration file..."
-    cp .p10k.zsh "$HOME/.p10k.zsh" || log_error "Failed to copy .p10k.zsh."
-else
-    log_warning "'.p10k.zsh' not found in the script's directory. Powerlevel10k will start its configuration wizard on first Zsh launch."
-fi
 
+log_success "Set terminal environment successfully!"
 
-# Configure .zshrc
-log_info "Updating ~/.zshrc with theme and plugins..."
-
-# Set ZSH_THEME
-if ! grep -q 'ZSH_THEME="powerlevel10k/powerlevel10k"' "$HOME/.zshrc"; then
-    sed -i 's/^ZSH_THEME="[^"]*"$/ZSH_THEME="powerlevel10k\/powerlevel10k"/' "$HOME/.zshrc"
-    if ! grep -q 'ZSH_THEME="powerlevel10k/powerlevel10k"' "$HOME/.zshrc"; then
-        echo 'ZSH_THEME="powerlevel10k/powerlevel10k"' >> "$HOME/.zshrc"
-    fi
-else
-    log_info "ZSH_THEME already set to powerlevel10k."
-fi
-
-# Source .p10k.zsh
-if ! grep -q '\[\[ ! -f ~/.p10k.zsh \]\] \|\| source ~/.p10k.zsh' "$HOME/.zshrc"; then
-    echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" >> "$HOME/.zshrc"
-else
-    log_info "Powerlevel10k source line already exists in ~/.zshrc."
-fi
-
-# Set plugins
-NEW_PLUGINS="git zsh-autosuggestions zsh-syntax-highlighting you-should-use zsh-bat"
-if grep -q "plugins=(" "$HOME/.zshrc"; then
-    # Replace existing plugins line
-    sed -i "s/^plugins=(.*)$/plugins=($NEW_PLUGINS)/" "$HOME/.zshrc"
-else
-    # Add plugins line if not found
-    echo "plugins=($NEW_PLUGINS)" >> "$HOME/.zshrc"
-fi
-log_success "Zsh plugins and theme configured in ~/.zshrc."
-
-log_success "Development environment setup complete!"
-log_warning "Please remember to log out and log back in, or reboot, for Zsh and Homebrew changes to take full effect."

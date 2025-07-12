@@ -1,16 +1,18 @@
-init: setup_terminal setup_sdk setup_docker install_apps
+setup: install_basics set_terminal install_docker set_sdk
 
-setup_terminal:
-	./term_env.sh
-	./term_emu.sh
-	./fzf.sh
+install_basics:
+	sudo chmod +x basics.sh
+	sudo ./basics.sh
 
-setup_sdk:
-	./sdk.sh
+install_docker:
+	sudo chmod +x docker.sh
+	sudo ./docker.sh
 
-setup_docker:
-	./docker.sh
+set_terminal:
+	sudo chmod +x term_env.sh term_emu.sh
+	sudo ./term_env.sh
+	sudo ./term_emu.sh
 
-install_apps:
-	./basics.sh
-
+set_sdk:
+	sudo chmod +x sdk.sh
+	sudo ./sdk.sh

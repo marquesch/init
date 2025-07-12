@@ -44,12 +44,44 @@ install_common_utility() {
     sudo apt install -y ffmpeg htop neofetch neovim net-tools sublime-text vim
 }
 
+install_homebrew() {
+    log_info "Attempting to install Homebrew..."
+    if command -v brew &> /dev/null; then
+        log_info "Homebrew is already installed. Skipping installation."
+    else
+        log_info "Installing Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || log_error "Failed to install Homebrew."
+        log_success "Homebrew installed and configured."
+    fi
+}
+
+install_fzf() {
+    if ! command -v brew &> /dev/null; then
+        log_error "Homebrew is not installed. Please install it first!"        
+        exit 1
+    fi
+    
+    log_info "Installing fzf using Brew..."
+    brew install fzf
+    log_success "Installed fzf successfully!"
+}
+
+install_asdf() {
+    log_info "Starting asdf install using Brew..."
+    brew install asdf
+    log_success "Installed asdf successfully!"
+}
+
 install_spotify() {
-    log_info "Installing Spotify via Snap..."
-    if snap install spotify; then
+    log_info "Adding Spotify GPG key..."
+    curl -sS https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+    echo "deb https://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+    sudo apt update
+    log_info "Installing spotify via apt..."
+    if sudo apt install -y spotify; then
         log_success "Spotify installed successfully."
     else
-        log_error "Failed to install Spotify via Snap. Check your Snap installation or internet connection."
+        log_error "Failed to install Spotify via apt."
     fi
 }
 
@@ -68,15 +100,16 @@ install_brave_browser() {
         log_info "Brave Browser is already installed. Skipping."
         return 0
     fi
-
+ 
     log_info "Adding Brave GPG key..."
-    curl -fsSL https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/brave-browser-archive-keyring.gpg || log_error "Failed to add Brave GPG key."
+    sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
 
     log_info "Adding Brave APT repository..."
-    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list > /dev/null || log_error "Failed to add Brave APT repository."
+    sudo curl -fsSLo /etc/apt/sources.list.d/brave-browser-release.sources https://brave-browser-apt-release.s3.brave.com/brave-browser.sources
 
     log_info "Updating apt cache and installing Brave Browser..."
     sudo apt update || log_error "Failed to update apt after adding Brave repo."
+
     sudo apt install -y brave-browser || log_error "Failed to install Brave Browser."
     log_success "Brave Browser installed successfully."
 }
@@ -88,16 +121,15 @@ install_chrome_browser() {
         return 0
     fi
 
-    log_info "Adding Google Chrome GPG key..."
-    wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg || log_error "Failed to add Google Chrome GPG key."
+    log_info "Downloading Google Chrome Browser .deb package..."
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 
-    log_info "Adding Google Chrome APT repository..."
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list > /dev/null || log_error "Failed to add Google Chrome APT repository."
-
-    log_info "Updating apt cache and installing Google Chrome..."
-    sudo apt update || log_error "Failed to update apt after adding Chrome repo."
-    sudo apt install -y google-chrome-stable || log_error "Failed to install Google Chrome."
+    sudo apt install -y ./google-chrome-stable_current_amd64.deb || log_error "Failed to install Google Chrome."
     log_success "Google Chrome installed successfully."
+
+    log_info "Cleaning up..."
+    rm google-chrome-stable_current_amd64.deb
+    log_info "Done cleaning up..."
 }
 
 install_vscode() {
@@ -106,19 +138,18 @@ install_vscode() {
         log_info "Visual Studio Code is already installed. Skipping."
         return 0
     fi
+    
+    log_info "Downloading Visual Studio Code .deb package..."
+    # TODO get vscode version dinamically
+    wget https://vscode.download.prss.microsoft.com/dbazure/download/stable/cb0c47c0cfaad0757385834bd89d410c78a856c0/code_1.102.0-1752099871_arm64.deb 
 
-    log_info "Adding Microsoft GPG key..."
-    wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
-    sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg || log_error "Failed to add Microsoft GPG key."
-    rm packages.microsoft.gpg
-
-    log_info "Adding VS Code APT repository..."
-    echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null || log_error "Failed to add VS Code APT repository."
-
-    log_info "Updating apt cache and installing VS Code..."
-    sudo apt update || log_error "Failed to update apt after adding VS Code repo."
-    sudo apt install -y code || log_error "Failed to install Visual Studio Code."
+    log_info "Installing Visual Studio Code via apt..."
+    sudo apt install -y code_1.102.0-1752099871_arm64.deb
     log_success "Visual Studio Code installed successfully."
+
+    log_info "Cleaning up..."
+    rm code_1.102.0-1752099871_arm64.deb
+    log_info "Done cleaning up..."
 }
 
 install_flameshot() {
@@ -167,6 +198,8 @@ check_ubuntu
 log_info "Starting application installation script for Ubuntu."
 
 install_common_dependencies
+install_homebrew
+install_fzf
 install_spotify
 install_postman
 install_brave_browser
