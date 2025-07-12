@@ -45,10 +45,10 @@ fi
 
 # --- Install Meslo Nerd Font ---
 log_info "Attempting to install Meslo Nerd Font..."
-wget https://github.com/ryanoasis/nerd-fonts/raw/refs/heads/master/src/unpatched-fonts/Meslo/S/Regular/Meslo%20LG%20S%20Regular%20for%20Powerline.ttf
+wget https://github.com/marquesch/files/raw/refs/heads/master/MesloLGSNerdFontMono-Regular.ttf
 mkdir -p "$HOME/.fonts"
-mv "Meslo LG S Regular for Powerline.ttf" "$HOME/.fonts"
-log_success "Successfully installed Meslo LG S Nerd Font"
+mv "MesloLGSNerdFontMono-Regular.ttf" "$HOME/.fonts"
+log_success "Successfully installed MesloLGS Mono Nerd Font"
 
 # --- Copy background image file ---
 mkdir -p ~/.config/wezterm

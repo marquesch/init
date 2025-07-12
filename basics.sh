@@ -34,7 +34,7 @@ install_common_dependencies() {
 
 install_common_utility() {
     log_info "Installing common utilities..."
-    sudo apt install -y ffmpeg htop neofetch neovim net-tools sublime-text vim 
+    sudo apt install -y flameshot ffmpeg htop neofetch neovim net-tools sublime-text vim 
 }
 
 install_fzf() {
@@ -134,42 +134,16 @@ install_vscode() {
     
     log_info "Downloading Visual Studio Code .deb package..."
     # TODO get vscode version dinamically
-    wget https://vscode.download.prss.microsoft.com/dbazure/download/stable/cb0c47c0cfaad0757385834bd89d410c78a856c0/code_1.102.0-1752099874_amd64.deb
+    file_name=code_1.102.0-1752099874_amd64.deb
+    wget "https://vscode.download.prss.microsoft.com/dbazure/download/stable/cb0c47c0cfaad0757385834bd89d410c78a856c0/$file_name"
 
     log_info "Installing Visual Studio Code via apt..."
-    sudo apt install -y ./code_1.102.0-1752099874_amd64.deb
+    sudo apt install -y "./$file_name"
     log_success "Visual Studio Code installed successfully."
 
     log_info "Cleaning up..."
-    rm -f code_1.102.0-1752099871_arm64.deb
+    rm -f "$file_name"
     log_info "Done cleaning up..."
-}
-
-install_flameshot() {
-    log_info "Installing Flameshot..."
-    if command -v flameshot &> /dev/null; then
-        log_info "Flameshot is already installed. Skipping."
-    else
-        sudo apt install -y flameshot || log_error "Failed to install Flameshot."
-        log_success "Flameshot installed successfully."
-    fi
-
-    log_info "Configuring Print Screen key for Flameshot (GNOME only)..."
-    if command -v gsettings &> /dev/null; then
-        # Disable default print screen behavior
-        gsettings set org.gnome.settings-daemon.plugins.media-keys screenshot '[]'
-        gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']"
-
-        # Set custom command for Print Screen
-        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom0 name 'Flameshot'
-        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom0 command 'flameshot gui'
-        gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings.custom0 binding 'Print'
-
-        log_success "Flameshot configured to Print Screen key."
-        log_warning "You might need to log out and log back in for the Flameshot keybinding change to take full effect."
-    else
-        log_warning "gsettings not found or not running GNOME desktop. Skipping Flameshot keybinding configuration. Please configure it manually in your system settings."
-    fi
 }
 
 install_slack() {
@@ -192,6 +166,8 @@ check_ubuntu
 
 log_info "Starting application installation script for Ubuntu."
 
+mkdir -p "$HOME/.local/bin"
+
 install_common_dependencies
 install_asdf
 install_fzf
@@ -200,7 +176,6 @@ install_postman
 install_brave_browser
 install_chrome_browser
 install_vscode
-install_flameshot
 install_slack
 
 log_success "All requested applications have been installed (or skipped if already present)."
