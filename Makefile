@@ -1,4 +1,4 @@
-setup: install_basics set_terminal install_docker set_sdk
+setup: install_basics set_terminal install_docker set_sdk dotfiles
 
 install_basics:
 	sudo chmod +x basics.sh
@@ -16,3 +16,8 @@ set_terminal:
 set_sdk:
 	sudo chmod +x sdk.sh
 	sudo ./sdk.sh
+
+dotfiles:
+	sudo chmod +x dotfiles.sh
+	sudo ./dotfiles.sh
+
