@@ -44,11 +44,15 @@ else
 fi
 
 # --- Install Meslo Nerd Font ---
-log_info "Attempting to install Meslo Nerd Font..."
-wget https://github.com/marquesch/files/raw/refs/heads/master/MesloLGSNerdFontMono-Regular.ttf
-mkdir -p "$HOME/.fonts"
-mv "MesloLGSNerdFontMono-Regular.ttf" "$HOME/.fonts"
-log_success "Successfully installed MesloLGS Mono Nerd Font"
+log_info "Attempting to install MesloLGS Nerd Font Mono..."
+if [ ! -f "$HOME/.fonts/MesloLGSNerdFontMono-Regular.ttf" ]; then
+    wget https://github.com/marquesch/files/raw/refs/heads/master/MesloLGSNerdFontMono-Regular.ttf
+    mkdir -p "$HOME/.fonts"
+    mv "MesloLGSNerdFontMono-Regular.ttf" "$HOME/.fonts"
+    log_success "Successfully installed MesloLGS Mono Nerd Font"
+else
+    log_info "MesloLGS Nerd Font Mono already installed. Skipping..."
+fi
 
 # --- Copy background image file ---
 mkdir -p ~/.config/wezterm

@@ -18,23 +18,9 @@ log_error() {
     exit 1
 }
 
-check_ubuntu() {
-    if ! grep -qi "ubuntu" /etc/os-release; then
-        log_error "This script is designed for Ubuntu only. Exiting."
-    fi
-}
-
-
-install_common_dependencies() {
-    log_info "Installing common system dependencies..."
-    sudo apt update || log_error "Failed to update apt."
-    sudo apt install -y curl wget gnupg apt-transport-https ca-certificates lsb-release software-properties-common || log_error "Failed to install common dependencies."
-    log_success "Common dependencies installed."
-}
-
 install_common_utility() {
     log_info "Installing common utilities..."
-    sudo apt install -y flameshot ffmpeg htop neofetch neovim net-tools sublime-text vim 
+    sudo apt install -y flameshot ffmpeg htop neofetch neovim net-tools vim 
 }
 
 install_fzf() {
@@ -162,13 +148,11 @@ install_slack() {
 set -e # Exit immediately if a command exits with a non-zero status.
 sudo -v # Refresh sudo timestamp at the beginning
 
-check_ubuntu
-
 log_info "Starting application installation script for Ubuntu."
 
 mkdir -p "$HOME/.local/bin"
 
-install_common_dependencies
+install_common_utility
 install_asdf
 install_fzf
 install_spotify

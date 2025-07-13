@@ -1,7 +1,10 @@
 SHELL := /bin/bash
 SHELLFLAGS := -c -i
 
-setup: install_basics set_terminal install_docker dotfiles
+setup: install_dependencies set_terminal install_docker install_basics setup_vim dotfiles
+
+install_dependencies:
+	./dependencies.sh
 
 install_basics:
 	./basics.sh
@@ -16,3 +19,5 @@ set_terminal:
 dotfiles:
 	./dotfiles.sh
 
+setup_vim:
+	./setup_vim.sh
