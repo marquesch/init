@@ -29,10 +29,8 @@ install_fzf() {
         log_info "fzf already installed. Skipping..."
         return 0
     fi
-    file_name=fzf-0.64.0-linux_amd64.tar.gz
-    wget "https://github.com/junegunn/fzf/releases/download/v0.64.0/$file_name"
-    tar -xzf "$file_name" -C "$HOME/.local/bin"
-    rm -f "$file_name"
+    git clone git@github.com:junegunn/fzf.git "$HOME/.fzf"
+    "$HOME/.fzf/install" --all
 }
 
 install_asdf() {
