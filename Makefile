@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 SHELLFLAGS := -c -i
 
-setup: install_dependencies set_terminal install_docker install_basics setup_vim dotfiles
+setup: install_dependencies set_terminal install_docker install_basics setup_vim dotfiles set_bg_image set_aliases
 
 install_dependencies:
 	./dependencies.sh
@@ -21,3 +21,13 @@ dotfiles:
 
 setup_vim:
 	./setup_vim.sh
+
+set_bg_image:
+	mkdir -p ${HOME}/.config/ubuntu
+	wget https://raw.githubusercontent.com/marquesch/files/refs/heads/master/bg.jpeg -O ${HOME}/.config/ubuntu/bg.jpeg
+	gsettings set org.gnome.desktop.background picture-uri file:///${HOME}/.config/ubuntu/bg.jpeg
+
+set_aliases:
+	mkdir -p ${HOME}/.oh_my_zsh/custom
+	wget https://raw.githubusercontent.com/marquesch/files/refs/heads/master/aliases.zsh -O ${HOME}/.oh_my_zsh/custom/aliases.zsh
+
