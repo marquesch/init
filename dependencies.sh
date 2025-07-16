@@ -18,7 +18,7 @@ log_error() {
 install_common_dependencies() {
     log_info "Installing common system dependencies..."
     sudo apt update || log_error "Failed to update apt."
-    sudo apt install -y curl wget gnupg apt-transport-https ca-certificates lsb-release software-properties-common || log_error "Failed to install common dependencies."
+    sudo apt install -y curl wget gnupg apt-transport-https ca-certificates lsb-release software-properties-common build-essential || log_error "Failed to install common dependencies."
     log_success "Common dependencies installed."
 }
 
