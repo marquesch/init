@@ -27,9 +27,9 @@ gnome_set_dark_mode:
 
 gnome_set_bg_image:
 	mkdir -p ${HOME}/.config/ubuntu
-	wget https://raw.githubusercontent.com/marquesch/files/refs/heads/master/bg.jpeg -O ${HOME}/.config/ubuntu/bg.jpeg
-	gsettings set org.gnome.desktop.background picture-uri file:///${HOME}/.config/ubuntu/bg.jpeg
-	gsettings set org.gnome.desktop.background picture-uri-dark file:///${HOME}/.config/ubuntu/bg.jpeg
+	wget ${file_url} -O ${HOME}/.config/ubuntu/bg
+	gsettings set org.gnome.desktop.background picture-uri file:///${HOME}/.config/ubuntu/bg
+	gsettings set org.gnome.desktop.background picture-uri-dark file:///${HOME}/.config/ubuntu/bg
 
 set_aliases:
 	mkdir -p ${HOME}/.oh_my_zsh/custom
