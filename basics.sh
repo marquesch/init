@@ -40,7 +40,7 @@ install_asdf() {
     fi
 
     log_info "Starting asdf install using git + bash..."
-    file_name=asdf-v0.18.0-darwin-amd64.tar.gz
+    file_name=asdf-v0.18.0-linux-amd64.tar.gz
     wget "https://github.com/asdf-vm/asdf/releases/download/v0.18.0/$file_name"
     tar -xzf "$file_name" -C "$HOME/.local/bin"
     log_success "Installed asdf successfully!"
