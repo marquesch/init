@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 SHELLFLAGS := -c -i
 
-setup: install_dependencies set_terminal install_docker install_basics setup_nvim dotfiles set_bg_image set_aliases
+setup: install_dependencies set_terminal install_docker install_basics setup_nvim dotfiles gnome_set_bg_image gnome_set_dark_mode set_aliases
 
 install_dependencies:
 	./dependencies.sh
