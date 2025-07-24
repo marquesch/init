@@ -1,6 +1,6 @@
 #!/bin/bash
 
-vim_plugins_folder="$HOME/.vim/pack/plugins/start"
+nvim_plugins_folder="$HOME/.local/share/nvim/pack/plugins/start"
 
 install_fzf_plugin() {
     echo "Trying to install fzf plugin via git..."
@@ -8,13 +8,13 @@ install_fzf_plugin() {
         echo "Plugin already installed!"
         return 0
     fi
-    git clone --depth 1 https://github.com/junegunn/fzf.vim "$vim_plugins_folder/fzf.vim"
+    git clone --depth 1 https://github.com/junegunn/fzf.vim "$nvim_plugins_folder/fzf.vim"
 
     echo "Successfully installed fzf vim plugin!"
 }
 
 echo "Trying to create plugins folder..."
-mkdir -p $vim_plugins_folder
+mkdir -p $nvim_plugins_folder
 
 install_fzf_plugin
 
