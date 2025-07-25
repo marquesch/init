@@ -142,6 +142,22 @@ install_slack() {
     fi
 }
 
+install_go() {
+    log_info "Installing Go..."
+
+    if command -v go; then
+        log_info "Go already installed. Skipping..."
+        return 0
+    fi
+
+    sudo mkdir -p /usr/local
+    wget https://go.dev/dl/go1.24.5.linux-amd64.tar.gz -O "${HOME}/Downloads/go.tar.gz"
+    sudo tar -xzf "${HOME}/Downloads/go.tar.gz" -C /usr/local
+    rm "${HOME}/Downloads/go.tar.gz"
+
+    log_success "Go installed successfully!"
+}
+
 # --- Script Execution ---
 set -e # Exit immediately if a command exits with a non-zero status.
 sudo -v # Refresh sudo timestamp at the beginning
@@ -159,6 +175,7 @@ install_brave_browser
 install_chrome_browser
 install_vscode
 # install_slack
+install_go
 
 log_success "All requested applications have been installed (or skipped if already present)."
 log_info "Remember to log out and log back in, or reboot your system, for all changes (especially Flameshot keybinding) to take full effect."
