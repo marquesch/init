@@ -137,6 +137,25 @@ install_neovim() {
     log_success "Neovim successfully installed!"
 }
 
+install_rust() {
+    log_info "Installing rust..."
+
+    if command -v rust; then
+        log_info "Rust already installed. Skipping..."
+        return 0
+    fi
+
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    log_success "Rust and cargo successfully installed!"
+}
+
+install_spotify_player() {
+    log_info "Installing spotify_player..."
+    cargo install spotify_player --locked
+    
+    log_success "spotify_player installed successfully!"
+}
+
 # --- Script Execution ---
 set -e # Exit immediately if a command exits with a non-zero status.
 sudo -v # Refresh sudo timestamp at the beginning
@@ -153,6 +172,8 @@ install_chrome_browser
 install_vscode
 install_go
 install_neovim
+install_rust
+install_spotify_player
 
 log_success "All requested applications have been installed (or skipped if already present)."
 log_info "Remember to log out and log back in, or reboot your system, for all changes (especially Flameshot keybinding) to take full effect."
