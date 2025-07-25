@@ -1,6 +1,6 @@
 #!/bin/bash
 
-nvim_plugins_folder="$HOME/.local/share/nvim/pack/plugins/start"
+nvim_plugins_folder="$HOME/.config/nvim/pack/plugins/start"
 
 install_fzf_plugin() {
     echo "Trying to install fzf plugin via git..."
