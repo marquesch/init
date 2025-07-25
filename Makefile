@@ -26,10 +26,10 @@ gnome_set_dark_mode:
 	gsettings set org.gnome.desktop.interface color-scheme prefer-dark
 
 gnome_set_bg_image:
-	mkdir -p ${HOME}/.config/ubuntu
-	wget https://github.com/marquesch/files/blob/master/bg.jpg -O ${HOME}/.config/ubuntu/bg
-	gsettings set org.gnome.desktop.background picture-uri file:///${HOME}/.config/ubuntu/bg
-	gsettings set org.gnome.desktop.background picture-uri-dark file:///${HOME}/.config/ubuntu/bg
+	mkdir -p ${HOME}/.config/os
+	wget https://raw.githubusercontent.com/marquesch/files/refs/heads/master/bg.jpg -O ${HOME}/.config/os/bg.jpg
+	gsettings set org.gnome.desktop.background picture-uri file:///${HOME}/.config/os/bg.jpg
+	gsettings set org.gnome.desktop.background picture-uri-dark file:///${HOME}/.config/os/bg.jpg
 
 set_aliases:
 	mkdir -p ${HOME}/.oh_my_zsh/custom
