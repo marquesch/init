@@ -102,8 +102,5 @@ else
     log_info "Powerlevel10k theme already exists. Skipping clone."
 fi
 
-mkdir -p "$HOME/.oh_my_zsh/custom"
-cp aliases.zsh "$HOME/.oh_my_zsh/custom/"
-
 log_success "Set terminal environment successfully!"
 

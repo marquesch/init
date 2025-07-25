@@ -153,12 +153,12 @@ mkdir -p "$HOME/.local/bin"
 install_common_utility
 install_asdf
 install_fzf
-install_spotify
-install_postman
+# install_spotify
+# install_postman
 install_brave_browser
 install_chrome_browser
 install_vscode
-install_slack
+# install_slack
 
 log_success "All requested applications have been installed (or skipped if already present)."
 log_info "Remember to log out and log back in, or reboot your system, for all changes (especially Flameshot keybinding) to take full effect."

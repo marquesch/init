@@ -54,10 +54,6 @@ else
     log_info "MesloLGS Nerd Font Mono already installed. Skipping..."
 fi
 
-# --- Download background image file ---
-mkdir -p "$HOME/.config/wezterm"
-wget https://raw.githubusercontent.com/marquesch/files/refs/heads/master/term_bg.jpeg -O "$HOME/.config/wezterm/bg.jpeg"
-
 # --- Set WezTerm as default terminal for GNOME ---
 log_info "Attempting to set WezTerm as the default terminal (GNOME only)..."
 if command -v gsettings &> /dev/null; then
