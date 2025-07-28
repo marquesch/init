@@ -151,9 +151,27 @@ install_rust() {
 
 install_spotify_player() {
     log_info "Installing spotify_player..."
+
+    if command -v spotify_player; then
+        log_info "spotify_player already installed. Skipping..."
+        return 0
+    fi
+
     cargo install spotify_player --locked
-    
     log_success "spotify_player installed successfully!"
+}
+
+install gopls() {
+    log_info "Installing gopls..."
+
+    if command -v gopls; then
+        log_info "gopls already installed. Skipping..."
+        return 0
+    fi
+
+    go install golang.org/x/tools/gopls@latest
+
+    log_success "gopls installed successfully..."
 }
 
 # --- Script Execution ---
@@ -171,6 +189,7 @@ install_brave_browser
 install_chrome_browser
 install_vscode
 install_go
+install_gopls
 install_neovim
 install_rust
 install_spotify_player
