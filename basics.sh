@@ -140,7 +140,7 @@ install_neovim() {
 install_rust() {
     log_info "Installing rust..."
 
-    if command -v rust; then
+    if command -v rustc; then
         log_info "Rust already installed. Skipping..."
         return 0
     fi
@@ -161,7 +161,7 @@ install_spotify_player() {
     log_success "spotify_player installed successfully!"
 }
 
-install gopls() {
+install_gopls() {
     log_info "Installing gopls..."
 
     if command -v gopls; then
