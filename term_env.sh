@@ -102,7 +102,16 @@ else
     log_info "Powerlevel10k theme already exists. Skipping clone."
 fi
 
-wget https://raw.githubusercontent.com/marquesch/files/refs/heads/master/aliases.zsh -O "{$ZSH_CUSTOM}/aliases.zsh"
+wget https://raw.githubusercontent.com/marquesch/files/refs/heads/master/aliases.zsh -O "${ZSH_CUSTOM}/aliases.zsh"
+
+if ! sudo grep -q "Host gitlab.evolux.net.br" /etc/ssh/ssh_config; then
+  sudo tee -a /etc/ssh/ssh_config > /dev/null <<EOF
+
+Host gitlab.evolux.net.br
+    User git
+    Port 2222
+EOF
+fi
 
 log_success "Set terminal environment successfully!"
 
