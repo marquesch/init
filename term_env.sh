@@ -102,5 +102,7 @@ else
     log_info "Powerlevel10k theme already exists. Skipping clone."
 fi
 
+wget https://raw.githubusercontent.com/marquesch/files/refs/heads/master/aliases.zsh -O "{$ZSH_CUSTOM}/aliases.zsh"
+
 log_success "Set terminal environment successfully!"
 
