@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 SHELLFLAGS := -c -i
 
-setup: install_dependencies set_terminal install_docker install_basics setup_nvim dotfiles gnome_set_bg_image gnome_set_dark_mode set_aliases
+setup: install_dependencies set_terminal install_docker install_basics dotfiles set_aliases
 
 install_dependencies:
 	./dependencies.sh
@@ -18,9 +18,6 @@ set_terminal:
 
 dotfiles:
 	./dotfiles.sh
-
-setup_nvim:
-	./setup_nvim.sh
 
 gnome_set_dark_mode:
 	gsettings set org.gnome.desktop.interface color-scheme prefer-dark
