@@ -20,7 +20,7 @@ log_error() {
 
 install_common_utility() {
 	log_info "Installing common utilities..."
-	sudo apt install -y flameshot ffmpeg htop neofetch net-tools vim
+	sudo apt install -y flameshot ffmpeg htop neofetch net-tools vim xclip
 }
 
 install_fzf() {
