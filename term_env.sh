@@ -93,6 +93,15 @@ else
 	log_info "zsh-bat already exists. Skipping clone."
 fi
 
+# zsh-titles
+if [ ! -d "${ZSH_CUSTOM}/plugins/zsh-titles" ]; then
+	log_info "Cloning zsh-titles..."
+        git clone https://github.com/amyreese/zsh-titles.git "${ZSH_CUSTOM}/plugins/zsh-titles" || log_error "Failed to clone zsh-titles."
+        mv ${ZSH_CUSTOM}/plugins/zsh-titles/titles.plugin.zsh ${ZSH_CUSTOM}/plugins/zsh-titles/zsh-titles.plugin.zsh
+else
+	log_info "zsh-bat already exists. Skipping clone."
+fi
+
 # powerlevel10k
 if [ ! -d "${ZSH_CUSTOM}/themes/powerlevel10k" ]; then
 	log_info "Cloning Powerlevel10k theme..."
