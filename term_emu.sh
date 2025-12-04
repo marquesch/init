@@ -22,25 +22,27 @@ log_error() {
 set -e  # Exit immediately if a command exits with a non-zero status.
 sudo -v # Refresh sudo timestamp
 
-log_info "Starting WezTerm and font installation script."
-
-# --- Install WezTerm ---
-log_info "Attempting to install WezTerm..."
-
-if command -v wezterm &>/dev/null; then
-	log_info "WezTerm is already installed. Skipping installation."
+log_info "Attempting to install alacritty..."
+if command -v alacritty &>/dev/null; then
+    log_info "Alacritty already installed. Skipping..."
 else
-	log_info "Setting up WezTerm APT repository..."
-	curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg || log_error "Failed to add WezTerm GPG key."
-	echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list >/dev/null || log_error "Failed to add WezTerm APT repository."
-	sudo chmod 644 /usr/share/keyrings/wezterm-fury.gpg || log_error "Failed to set permissions on WezTerm GPG key."
-
-	log_info "Updating apt package index..."
-	sudo apt update || log_error "Failed to update apt after adding WezTerm repo."
-
-	log_info "Installing WezTerm..."
-	sudo apt install -y wezterm || log_error "Failed to install WezTerm."
-	log_success "WezTerm installed."
+    log_info "Installing alacritty..."
+    git clone https://github.com/alacritty/alacritty.git
+    cd alacritty
+    cargo build --release
+    sudo tic -xe alacritty,alacritty-direct extra/alacritty.info
+    sudo cp target/release/alacritty /usr/local/bin # or anywhere else in $PATH
+    sudo cp extra/logo/alacritty-term.svg /usr/share/pixmaps/Alacritty.svg
+    sudo desktop-file-install extra/linux/Alacritty.desktop
+    sudo update-desktop-database
+    sudo mkdir -p /usr/local/share/man/man1
+    sudo mkdir -p /usr/local/share/man/man5
+    scdoc < extra/man/alacritty.1.scd | gzip -c | sudo tee /usr/local/share/man/man1/alacritty.1.gz > /dev/null
+    scdoc < extra/man/alacritty-msg.1.scd | gzip -c | sudo tee /usr/local/share/man/man1/alacritty-msg.1.gz > /dev/null
+    scdoc < extra/man/alacritty.5.scd | gzip -c | sudo tee /usr/local/share/man/man5/alacritty.5.gz > /dev/null
+    scdoc < extra/man/alacritty-bindings.5.scd | gzip -c | sudo tee /usr/local/share/man/man5/alacritty-bindings.5.gz > /dev/null
+    cp extra/completions/_alacritty ${ZDOTDIR:-~}/.zsh_functions/_alacritty
+    log_info "Alacritty installed"
 fi
 
 # --- Install Meslo Nerd Font ---
@@ -53,18 +55,6 @@ if [ ! -f "$HOME/.fonts/MesloLGSNerdFontMono-Regular.ttf" ]; then
 	log_success "Successfully installed MesloLGS Mono Nerd Font"
 else
 	log_info "MesloLGS Nerd Font Mono already installed. Skipping..."
-fi
-
-# --- Set WezTerm as default terminal for GNOME ---
-log_info "Attempting to set WezTerm as the default terminal (GNOME only)..."
-if command -v gsettings &>/dev/null; then
-	if gsettings set org.gnome.desktop.default-applications.terminal exec "/usr/bin/wezterm"; then
-		log_success "WezTerm set as default GNOME terminal."
-	else
-		log_warning "Failed to set WezTerm as default terminal. This might happen if you're not in a GNOME environment or permissions are incorrect."
-	fi
-else
-	log_info "gsettings not available or not running a GNOME desktop. Skipping setting default terminal."
 fi
 
 log_success "WezTerm installation and configuration complete!"

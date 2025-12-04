@@ -33,41 +33,6 @@ install_fzf() {
 	"$HOME/.fzf/install" --all
 }
 
-install_asdf() {
-	if command -v asdf; then
-		log_info "asdf already installed. Skipping..."
-		return 0
-	fi
-
-	log_info "Starting asdf install using git + bash..."
-	file_name=asdf-v0.18.0-linux-amd64.tar.gz
-	wget "https://github.com/asdf-vm/asdf/releases/download/v0.18.0/$file_name"
-	tar -xzf "$file_name" -C "$HOME/.local/bin"
-	log_success "Installed asdf successfully!"
-	log_info "Cleaning up"
-	rm -f $file_name
-}
-
-install_brave_browser() {
-	log_info "Installing Brave Browser..."
-	if command -v brave-browser &>/dev/null; then
-		log_info "Brave Browser is already installed. Skipping."
-		return 0
-	fi
-
-	log_info "Adding Brave GPG key..."
-	sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-
-	log_info "Adding Brave APT repository..."
-	sudo curl -fsSLo /etc/apt/sources.list.d/brave-browser-release.sources https://brave-browser-apt-release.s3.brave.com/brave-browser.sources
-
-	log_info "Updating apt cache and installing Brave Browser..."
-	sudo apt update || log_error "Failed to update apt after adding Brave repo."
-
-	sudo apt install -y brave-browser || log_error "Failed to install Brave Browser."
-	log_success "Brave Browser installed successfully."
-}
-
 install_chrome_browser() {
 	log_info "Installing Google Chrome Browser..."
 	if command -v google-chrome &>/dev/null; then
@@ -82,27 +47,6 @@ install_chrome_browser() {
 
 	log_info "Cleaning up..."
 	rm google-chrome-stable_current_amd64.deb
-	log_info "Done cleaning up..."
-}
-
-install_vscode() {
-	log_info "Installing Visual Studio Code..."
-	if command -v code &>/dev/null; then
-		log_info "Visual Studio Code is already installed. Skipping."
-		return 0
-	fi
-
-	log_info "Downloading Visual Studio Code .deb package..."
-	# TODO get vscode version dinamically
-	file_name=code_1.102.0-1752099874_amd64.deb
-	wget "https://vscode.download.prss.microsoft.com/dbazure/download/stable/cb0c47c0cfaad0757385834bd89d410c78a856c0/$file_name"
-
-	log_info "Installing Visual Studio Code via apt..."
-	sudo apt install -y "./$file_name"
-	log_success "Visual Studio Code installed successfully."
-
-	log_info "Cleaning up..."
-	rm -f "$file_name"
 	log_info "Done cleaning up..."
 }
 
@@ -161,6 +105,22 @@ install_spotify_player() {
 	log_success "spotify_player installed successfully!"
 }
 
+install_uv() {
+    log_info "Installing uv from source..."
+
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+
+    log_info "installed uv successfully!"
+}
+
+install_ruff() {
+    log_info "Installing ruff..."
+
+    uv tool install ruff@latest
+
+    log_info "Ruff installed successfully!"
+}
+
 # --- Script Execution ---
 set -e  # Exit immediately if a command exits with a non-zero status.
 sudo -v # Refresh sudo timestamp at the beginning
@@ -170,15 +130,13 @@ log_info "Starting application installation script for Ubuntu."
 mkdir -p "$HOME/.local/bin"
 
 install_common_utility
-install_asdf
 install_fzf
-# install_brave_browser
 install_chrome_browser
-install_vscode
 install_go
 install_neovim
 install_rust
 install_spotify_player
+install_uv
 
 log_success "All requested applications have been installed (or skipped if already present)."
 log_info "Remember to log out and log back in, or reboot your system, for all changes (especially Flameshot keybinding) to take full effect."
