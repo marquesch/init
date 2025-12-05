@@ -42,7 +42,7 @@ else
     scdoc < extra/man/alacritty.5.scd | gzip -c | sudo tee /usr/local/share/man/man5/alacritty.5.gz > /dev/null
     scdoc < extra/man/alacritty-bindings.5.scd | gzip -c | sudo tee /usr/local/share/man/man5/alacritty-bindings.5.gz > /dev/null
     cp extra/completions/_alacritty ${ZDOTDIR:-~}/.zsh_functions/_alacritty
-    log_info "Alacritty installed"
+    log_success "Alacritty installed"
 fi
 
 # --- Install Meslo Nerd Font ---
@@ -56,6 +56,21 @@ if [ ! -f "$HOME/.fonts/MesloLGSNerdFontMono-Regular.ttf" ]; then
 else
 	log_info "MesloLGS Nerd Font Mono already installed. Skipping..."
 fi
+
+log_info "Attempting to install tmux"
+if command -v tmux &>/dev/null; then
+    log_info "tmux already installed. Skipping..."
+else
+    sudo apt update && sudo apt install -y tmux
+    log_success "tmux successfully installed"
+fi
+
+log_info "Attempting to install tmux package manager"
+if [ -d "$HOME/.tmux/ "]; then
+    log_info "TPM already installed. Skipping..."
+else
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    log_success "Succesfully installed TPM..."
 
 log_success "WezTerm installation and configuration complete!"
 log_warning "You may need to restart your terminal or session for changes (especially default terminal) to take full effect."
