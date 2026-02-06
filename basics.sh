@@ -50,6 +50,31 @@ install_chrome_browser() {
 	log_info "Done cleaning up..."
 }
 
+install_zen_browser() {
+    if command -v zen &>/dev/null; then
+        log_info "Zen browser is already installed. Skipping."
+        return 0
+    fi
+
+    log_info "Downloading Zen browser"
+    wget https://github.com/zen-browser/desktop/releases/latest/download/zen.linux-x86_64.tar.xz -O zen.tar.xz
+    sudo tar -xf zen.tar.xz -C /opt/
+    dir_path=$HOME/.local/share/applications
+    mkdir -p $dir_path
+    echo "[Desktop Entry] \
+Name=Zen\
+Exec=/opt/zen/zen\
+Icon=/opt/zen/browser/chrome/icons/default/default128.png\
+Type=Application\
+Categories=Network;WebBrowser;\
+Terminal=false\
+" > $dir_path/zen.desktop
+    rm zen.tar.xz
+
+    log_success "Successfully installed zen browser"
+
+}
+
 install_go() {
 	log_info "Installing Go..."
 
@@ -132,6 +157,7 @@ mkdir -p "$HOME/.local/bin"
 install_common_utility
 install_fzf
 install_chrome_browser
+install_zen_browser
 install_go
 install_neovim
 install_rust
